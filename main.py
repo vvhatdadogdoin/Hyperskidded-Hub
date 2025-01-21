@@ -98,7 +98,7 @@ def whitelist():
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
     
-bot = commands.Bot(prefix = ">", intents = discord.Intents.all())
+bot = commands.Bot(command_prefix = ">", intents = discord.Intents.all())
 
 @bot.event
 async def on_ready():
