@@ -16,7 +16,7 @@ from time import sleep
 app = Flask(__name__)
 token = os.getenv("TOKEN")
 url = os.getenv("URL")
-owner = os.getenv("OWNER")
+owner = 1224392642448724012
 
 whitelisted_users = [
     1224392642448724012
@@ -308,7 +308,7 @@ if __name__ == "__main__":
     # bot = threading.Thread(target = main2, daemon=True)
     
     webserver.start()
-    
+
     bot.run(token)
     
     webserver.join()
