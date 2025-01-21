@@ -80,7 +80,7 @@ def bans():
         return jsonify({"status": "error", "message": str(err)}), 500
 
 @app.route("/usage-bans", methods=["GET"])
-def bans():
+def usagebans():
     try:
         return jsonify({"bans": usage_banned_users}), 200
     except Exception as err:
