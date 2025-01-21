@@ -79,6 +79,13 @@ def bans():
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
 
+@app.route("/usage-bans", methods=["GET"])
+def bans():
+    try:
+        return jsonify({"bans": usage_banned_users}), 200
+    except Exception as err:
+        return jsonify({"status": "error", "message": str(err)}), 500
+
 @app.route("/whitelist", methods=["POST"])
 def whitelist():
     data = request.get_json()
