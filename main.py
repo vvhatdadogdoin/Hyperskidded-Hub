@@ -96,7 +96,7 @@ def whitelist():
     if authorization is not token:
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if sender is not owner:
+    if sender != owner:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
