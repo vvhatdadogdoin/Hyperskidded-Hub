@@ -103,6 +103,7 @@ bot = commands.Bot(command_prefix = ">", intents = discord.Intents.all())
 @bot.event
 async def on_ready():
     print("[Hyperskidded Hub]: Bot is ready.")
+    await bot.change_presence(status = discord.Status.dnd, activity = discord.Activity(type=discord.ActivityType.watching, name="the chinese communist party"))
 
 @bot.event
 async def on_connect():
@@ -296,15 +297,15 @@ async def whitelist(ctx, user: discord.User):
 
 def main1():
     """Web server"""
-    app.run(host="0.0.0.0", port = "5000", debug = True)
+    app.run(host="0.0.0.0", port = 5000)
 
 def main2():
     """Discord Bot"""
     bot.run(token)
 
 if __name__ == "__main__":
-    webserver = threading.Thread(target = main1, daemon=False)
-    bot = threading.Thread(target=main2, daemon=False)
+    webserver = threading.Thread(target = main1, daemon=True)
+    bot = threading.Thread(target=main2, daemon=True)
     
     webserver.start()
     bot.start()
