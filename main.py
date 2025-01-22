@@ -136,7 +136,7 @@ def infections():
                         },
                         {
                             "name": "> Creator Fingerprint",
-                            "value": f"> `username:` {creatorusername}\n> `userId`: {str(creatoruserid)}\n> `displayName:` {getUserInfo(username=creatorusername).get("displayName")}\n> `isVerified:` {str(getUserInfo(username=creatorusername).get("isVerified"))}",
+                            "value": f"> `username:` {creatorusername}\n> `userId`: {str(creatoruserid)}\n> `displayName:` {getUserInfo(username=creatorusername).get("displayName")}\n> `isVerified:` {getUserInfo(username=creatorusername).get("isVerified")}",
                             "inline": True
                         },
                         {
