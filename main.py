@@ -22,9 +22,9 @@ whitelisted_users = {
     "1224392642448724012": 1224392642448724012
 }
 
-banned_users = []
+banned_users = {}
 
-usage_banned_users = []
+usage_banned_users = {}
 
 auth_headers = {
     "Authorization": token
@@ -48,10 +48,55 @@ def ban():
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        banned_users.append(user)
+        banned_users[user] = user
         return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
+    
+@app.route("/unban", methods=["POST"])
+def unban():
+    data = request.get_json()
+    user = data.get("user")
+    sender = data.get("sender")
+    authorization = data.get("authorization")
+
+    if authorization != token:
+        return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
+    
+    if not whitelisted_users[sender]:
+        return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
+    
+    try:
+        if banned_users[user]:
+            del banned_users[user]
+            return jsonify({"status": "success"}), 200
+        else:
+            return jsonify({"status": "not banned"}), 400
+    except Exception as err:
+        return jsonify({"status": "error", "message": str(err)}), 500
+    
+@app.route("/usage-unban", methods=["POST"])
+def usageunban():
+    data = request.get_json()
+    user = data.get("user")
+    sender = data.get("sender")
+    authorization = data.get("authorization")
+
+    if authorization != token:
+        return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
+    
+    if not whitelisted_users[sender]:
+        return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
+    
+    try:
+        if usage_banned_users[user]:
+            del usage_banned_users[user]
+            return jsonify({"status": "success"}), 200
+        else:
+            return jsonify({"status": "not banned"}), 400
+    except Exception as err:
+        return jsonify({"status": "error", "message": str(err)}), 500
+    
     
 @app.route("/usage-ban", methods=["POST"])
 def usage_ban():
@@ -63,11 +108,11 @@ def usage_ban():
     if authorization != token:
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if not whitelisted_users[str(sender)]:
+    if not whitelisted_users[sender]:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        usage_banned_users.append(user)
+        usage_banned_users[user] = user
         return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
@@ -96,12 +141,15 @@ def whitelist():
     if authorization != token:
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if str(sender) != str(owner):
+    if sender != str(owner):
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        whitelisted_users[user] = user
-        return jsonify({"status": "success"}), 200
+        if not whitelisted_users[user]:
+            whitelisted_users[user] = user
+            return jsonify({"status": "success"}), 200
+        else:
+            return jsonify({"status": "already whitelisted"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
     
@@ -115,7 +163,7 @@ def removewhitelist():
     if authorization != token:
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if str(sender) != str(owner):
+    if sender != str(owner):
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
@@ -204,7 +252,7 @@ async def on_command(ctx):
 @bot.command()
 async def ban(ctx, user: str):
     try:
-        sentrequest = requests.post(url+"ban", json={"user": user, "authorization": token, "sender": ctx.author.id})
+        sentrequest = requests.post(url+"ban", json={"user": user, "authorization": token, "sender": str(ctx.author.id)})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -228,6 +276,47 @@ async def ban(ctx, user: str):
                 color = discord.Color.green(),
                 title = "Success",
                 description = "Banned user: "+user
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+    except Exception as err:
+        embed = discord.Embed(
+            color = discord.Color.red(),
+            title = "Error",
+            description = str(err)
+        )
+        embed.timestamp = discord.utils.utcnow()
+        embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+        await ctx.send(embed=embed)
+
+@bot.command()
+async def unban(ctx, user: str):
+    try:
+        sentrequest = requests.post(url+"unban", json={"user": user, "authorization": token, "sender": str(ctx.author.id)})
+        if sentrequest.status_code == 404:
+            embed = discord.Embed(
+                color = discord.Color.yellow(),
+                title = "Warning",
+                description = "You are not whitelisted."
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+        elif sentrequest.status_code == 500:
+            embed = discord.Embed(
+                color = discord.Color.red(),
+                title = "Error",
+                description = "An unexpected error has occured."
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+        elif sentrequest.status_code == 200:
+            embed = discord.Embed(
+                color = discord.Color.green(),
+                title = "Success",
+                description = "Unbanned user: "+user
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -284,9 +373,50 @@ async def usageban(ctx, user: str):
         await ctx.send(embed=embed)
 
 @bot.command()
+async def usageunban(ctx, user: str):
+    try:
+        sentrequest = requests.post(url+"usage-unban", json={"user": user, "authorization": token, "sender": str(ctx.author.id)})
+        if sentrequest.status_code == 404:
+            embed = discord.Embed(
+                color = discord.Color.yellow(),
+                title = "Warning",
+                description = "You are not whitelisted."
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+        elif sentrequest.status_code == 500:
+            embed = discord.Embed(
+                color = discord.Color.red(),
+                title = "Error",
+                description = "An unexpected error has occured."
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+        elif sentrequest.status_code == 200:
+            embed = discord.Embed(
+                color = discord.Color.green(),
+                title = "Success",
+                description = "Unbanned user "+user+""
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+    except Exception as err:
+        embed = discord.Embed(
+            color = discord.Color.red(),
+            title = "Error",
+            description = str(err)
+        )
+        embed.timestamp = discord.utils.utcnow()
+        embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+        await ctx.send(embed=embed)
+
+@bot.command()
 async def whitelist(ctx, user: discord.User):
     try:
-        sentrequest = requests.post(url+"whitelist", json={"user": user.id, "authorization": token, "sender": ctx.author.id})
+        sentrequest = requests.post(url+"whitelist", json={"user": str(user.id), "authorization": token, "sender": str(ctx.author.id)})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -327,7 +457,7 @@ async def whitelist(ctx, user: discord.User):
 @bot.command()
 async def removewhitelist(ctx, user: discord.User):
     try:
-        sentrequest = requests.post(url+"remove-whitelist", json={"user": user.id, "authorization": token, "sender": ctx.author.id})
+        sentrequest = requests.post(url+"remove-whitelist", json={"user": str(user.id), "authorization": token, "sender": str(ctx.author.id)})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
