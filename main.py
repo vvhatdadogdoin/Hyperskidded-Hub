@@ -700,7 +700,7 @@ async def usageunban(ctx, user: str):
 @bot.command()
 async def whitelist(ctx, user: discord.User):
     try:
-        sentrequest = requests.post(url+"whitelist", json={"user": str(user.id), "authorization": token, "sender": str(ctx.author.id)})
+        sentrequest = requests.post(url+"whitelist", json={"user": user.id, "authorization": token, "sender": str(ctx.author.id)})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -750,7 +750,7 @@ async def whitelist(ctx, user: discord.User):
 @bot.command()
 async def removewhitelist(ctx, user: discord.User):
     try:
-        sentrequest = requests.post(url+"remove-whitelist", json={"user": str(user.id), "authorization": token, "sender": str(ctx.author.id)})
+        sentrequest = requests.post(url+"remove-whitelist", json={"user": user.id, "authorization": token, "sender": str(ctx.author.id)})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
