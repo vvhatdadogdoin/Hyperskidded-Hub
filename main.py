@@ -38,7 +38,7 @@ def index():
 def ban():
     data = request.get_json()
     user = data.get("user")
-    sender = data.get("sender")
+    sender = str(data.get("sender"))
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -57,7 +57,7 @@ def ban():
 def unban():
     data = request.get_json()
     user = data.get("user")
-    sender = data.get("sender")
+    sender = str(data.get("sender"))
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -79,7 +79,7 @@ def unban():
 def usageunban():
     data = request.get_json()
     user = data.get("user")
-    sender = data.get("sender")
+    sender = str(data.get("sender"))
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -102,7 +102,7 @@ def usageunban():
 def usage_ban():
     data = request.get_json()
     user = data.get("user")
-    sender = data.get("sender")
+    sender = str(data.get("sender"))
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -135,7 +135,7 @@ def usagebans():
 def whitelist():
     data = request.get_json()
     user = data.get("user_id")
-    sender = data.get("sender")
+    sender = str(data.get("sender"))
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -157,7 +157,7 @@ def whitelist():
 def removewhitelist():
     data = request.get_json()
     user = data.get("user_id")
-    sender = data.get("sender")
+    sender = str(data.get("sender"))
     authorization = data.get("authorization")
 
     if authorization != token:
