@@ -120,14 +120,14 @@ def usage_ban():
 @app.route("/bans", methods=["GET"])
 def bans():
     try:
-        return jsonify({"bans": banned_users}), 200
+        return jsonify(banned_users), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
 
 @app.route("/usage-bans", methods=["GET"])
 def usagebans():
     try:
-        return jsonify({"bans": usage_banned_users}), 200
+        return jsonify(usage_banned_users), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
 
