@@ -18,9 +18,9 @@ token = os.getenv("TOKEN")
 url = os.getenv("URL")
 owner = 1224392642448724012
 
-whitelisted_users = [
-    1224392642448724012
-]
+whitelisted_users = {
+    "1224392642448724012": 1224392642448724012
+}
 
 banned_users = []
 
@@ -41,10 +41,10 @@ def ban():
     sender = data.get("sender")
     authorization = data.get("authorization")
 
-    if authorization is not token:
+    if authorization != token:
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if not sender in whitelisted_users:
+    if not whitelisted_users[str(sender)]:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
@@ -60,10 +60,10 @@ def usage_ban():
     sender = data.get("sender")
     authorization = data.get("authorization")
 
-    if authorization is not token:
+    if authorization != token:
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if not sender in whitelisted_users:
+    if not whitelisted_users[str(sender)]:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
@@ -93,18 +93,40 @@ def whitelist():
     sender = data.get("sender")
     authorization = data.get("authorization")
 
-    if authorization is not token:
+    if authorization != token:
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if sender != owner:
+    if str(sender) != str(owner):
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        whitelisted_users.append(user)
+        whitelisted_users[user] = user
         return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
     
+@app.route("/remove-whitelist", methods=["POST"])
+def removewhitelist():
+    data = request.get_json()
+    user = data.get("user_id")
+    sender = data.get("sender")
+    authorization = data.get("authorization")
+
+    if authorization != token:
+        return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
+    
+    if str(sender) != str(owner):
+        return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
+    
+    try:
+        if whitelisted_users[user]:
+            del whitelisted_users[user]
+            return jsonify({"status": "success"}), 200
+        else:
+            return jsonify({"status": "success", "message": "User is not whitelisted."}), 200
+    except Exception as err:
+        return jsonify({"status": "error", "message": str(err)}), 500
+
 bot = commands.Bot(command_prefix = ">", intents = discord.Intents.all())
 
 @bot.event
@@ -269,7 +291,48 @@ async def whitelist(ctx, user: discord.User):
             embed = discord.Embed(
                 color = discord.Color.yellow(),
                 title = "Warning",
-                description = "You are not whitelisted."
+                description = "You are not the owner."
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+        elif sentrequest.status_code == 500:
+            embed = discord.Embed(
+                color = discord.Color.red(),
+                title = "Error",
+                description = "An unexpected error has occured."
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+        elif sentrequest.status_code == 200:
+            embed = discord.Embed(
+                color = discord.Color.green(),
+                title = "Success",
+                description = "Whitelisted user "+user
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+    except Exception as err:
+        embed = discord.Embed(
+            color = discord.Color.red(),
+            title = "Error",
+            description = str(err)
+        )
+        embed.timestamp = discord.utils.utcnow()
+        embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+        await ctx.send(embed=embed)
+
+@bot.command()
+async def removewhitelist(ctx, user: discord.User):
+    try:
+        sentrequest = requests.post(url+"remove-whitelist", json={"user": user.id, "authorization": token, "sender": ctx.author.id})
+        if sentrequest.status_code == 404:
+            embed = discord.Embed(
+                color = discord.Color.yellow(),
+                title = "Warning",
+                description = "You are not the owner."
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
