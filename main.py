@@ -16,6 +16,7 @@ from time import sleep
 app = Flask(__name__)
 token = os.getenv("TOKEN")
 url = os.getenv("URL")
+logs = os.getenv("LOGS_URL")
 owner = 1224392642448724012
 
 whitelisted_users = {
@@ -39,16 +40,69 @@ def ban():
     data = request.get_json()
     user = data.get("user")
     sender = str(data.get("sender"))
+    reason = str(data.get("reason"))
     authorization = data.get("authorization")
 
     if authorization != token:
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"An unexpected ban request has been logged.",
+                    "color": 7340207,
+                    "fields": [
+                        {
+                            "name": "Sender",
+                            "value": sender
+                        },
+                        {
+                            "name": "User provided to ban",
+                            "value": user
+                        },
+                        {
+                            "name": "Reason",
+                            "value": f"```\n{reason}\n```"
+                        }
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
     if not whitelisted_users[str(sender)]:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        banned_users[user] = user
+        banned_users[user] = {"reason": reason}
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"A new ban has been issued by <@{sender}>",
+                    "color": 7340207,
+                    "fields": [
+                        {
+                            "name": "User",
+                            "value": user
+                        },
+                        {
+                            "name": "Reason",
+                            "value": f"```\n{reason}\n```"
+                        }
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
@@ -61,6 +115,30 @@ def unban():
     authorization = data.get("authorization")
 
     if authorization != token:
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"An unexpected unban request has been logged.",
+                    "color": 7340207,
+                    "fields": [
+                        {
+                            "name": "Sender",
+                            "value": sender
+                        },
+                        {
+                            "name": "User provided to ban",
+                            "value": user
+                        },
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
     if not whitelisted_users[sender]:
@@ -69,6 +147,26 @@ def unban():
     try:
         if banned_users[user]:
             del banned_users[user]
+            requests.post(logs, json={
+                "content": None,
+                "embeds": [
+                    {
+                        "title": "Hyperskidded Hub",
+                        "description": f"An user has been unbanned by <@{sender}>",
+                        "color": 7340207,
+                        "fields": [
+                            {
+                                "name": "User",
+                                "value": user
+                            },
+                        ],
+                        "footer": {
+                            "text": "Hyperskidded Hub",
+                            "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                        }
+                    }
+                ],
+            })
             return jsonify({"status": "success"}), 200
         else:
             return jsonify({"status": "not banned"}), 400
@@ -83,6 +181,30 @@ def usageunban():
     authorization = data.get("authorization")
 
     if authorization != token:
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"An unexpected usage unban request has been logged.",
+                    "color": 7340207,
+                    "fields": [
+                        {
+                            "name": "Sender",
+                            "value": sender
+                        },
+                        {
+                            "name": "User provided to unban",
+                            "value": user
+                        },
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
     if not whitelisted_users[sender]:
@@ -91,6 +213,27 @@ def usageunban():
     try:
         if usage_banned_users[user]:
             del usage_banned_users[user]
+            requests.post(logs, json={
+                "content": None,
+                "embeds": [
+                    {
+                        "title": "Hyperskidded Hub",
+                        "description": f"An user has been usage unbanned by <@{sender}>",
+                        "color": 7340207,
+                        "fields": [
+                            {
+                                "name": "User",
+                                "value": user
+                            },
+                        ],
+                        "footer": {
+                            "text": "Hyperskidded Hub",
+                            "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                        }
+                    }
+                ],
+            })
+        
             return jsonify({"status": "success"}), 200
         else:
             return jsonify({"status": "not banned"}), 400
@@ -103,16 +246,69 @@ def usage_ban():
     data = request.get_json()
     user = data.get("user")
     sender = str(data.get("sender"))
+    reason = str(data.get("reason"))
     authorization = data.get("authorization")
 
     if authorization != token:
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"An unexpected usage ban request has been logged.",
+                    "color": 7340207,
+                    "fields": [
+                        {
+                            "name": "Sender",
+                            "value": sender
+                        },
+                        {
+                            "name": "User provided to ban",
+                            "value": user
+                        },
+                        {
+                            "name": "Reason",
+                            "value": f"```\n{reason}\n```"
+                        }
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
     if not whitelisted_users[sender]:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        usage_banned_users[user] = user
+        usage_banned_users[user] = {"reason": reason}
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"A new usage ban has been issued by <@{sender}>",
+                    "color": 7340207,
+                    "fields": [
+                        {
+                            "name": "User",
+                            "value": user
+                        },
+                        {
+                            "name": "Reason",
+                            "value": f"```\n{reason}\n```"
+                        }
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
@@ -120,6 +316,20 @@ def usage_ban():
 @app.route("/bans", methods=["GET"])
 def bans():
     try:
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"Bans have been fetched.",
+                    "color": 7340207,
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify(banned_users), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
@@ -127,6 +337,20 @@ def bans():
 @app.route("/usage-bans", methods=["GET"])
 def usagebans():
     try:
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"Usage bans have been fetched.",
+                    "color": 7340207,
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify(usage_banned_users), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
@@ -139,6 +363,30 @@ def whitelist():
     authorization = data.get("authorization")
 
     if authorization != token:
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"An unexpected whitelist request has been logged.",
+                    "color": 7340207,
+                    "fields": [
+                        {
+                            "name": "Sender",
+                            "value": sender
+                        },
+                        {
+                            "name": "User attempted to be whitelisted",
+                            "value": user
+                        },
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
     if sender != str(owner):
@@ -161,6 +409,30 @@ def removewhitelist():
     authorization = data.get("authorization")
 
     if authorization != token:
+        requests.post(logs, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": f"An unexpected whitelist removal request has been logged.",
+                    "color": 7340207,
+                    "fields": [
+                        {
+                            "name": "Sender",
+                            "value": sender
+                        },
+                        {
+                            "name": "User provided to remove whitelist",
+                            "value": user
+                        },
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+        })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
     if sender != str(owner):
@@ -250,9 +522,9 @@ async def on_command(ctx):
         pass
 
 @bot.command()
-async def ban(ctx, user: str):
+async def ban(ctx, user: str, *, reason: str):
     try:
-        sentrequest = requests.post(url+"ban", json={"user": user, "authorization": token, "sender": str(ctx.author.id)})
+        sentrequest = requests.post(url+"ban", json={"user": user, "authorization": token, "sender": str(ctx.author.id), "reason": reason})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -275,7 +547,11 @@ async def ban(ctx, user: str):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Banned "+user+"."
+                description = f"""Banned {user}
+```
+{reason}
+```
+                """
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -316,7 +592,7 @@ async def unban(ctx, user: str):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Unbanned "+user+"."
+                description = "Unbanned user: "+user
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -332,9 +608,9 @@ async def unban(ctx, user: str):
         await ctx.send(embed=embed)
 
 @bot.command()
-async def usageban(ctx, user: str):
+async def usageban(ctx, user: str, *, reason: str):
     try:
-        sentrequest = requests.post(url+"usage-ban", json={"user": user, "authorization": token, "sender": ctx.author.id})
+        sentrequest = requests.post(url+"usage-ban", json={"user": user, "authorization": token, "sender": ctx.author.id, "reason": reason})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -357,7 +633,11 @@ async def usageban(ctx, user: str):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Banned "+user+" from using Hyperskidded Hub."
+                description = f"""Banned {user} from using Hyperskidded Hub.
+```
+{reason}
+```
+                """
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -398,7 +678,7 @@ async def usageunban(ctx, user: str):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Unbanned "+user+"."
+                description = "Unbanned "+user+""
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -522,7 +802,7 @@ def main2():
     bot.run(token)
 
 if __name__ == "__main__":
-    webserver = threading.Thread(target = main1, daemon=True)
+    webserver = threading.Thread(target = main1, daemon=False)
     # bot = threading.Thread(target = main2, daemon=True)
     
     webserver.start()
