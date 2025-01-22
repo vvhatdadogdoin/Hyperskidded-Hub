@@ -145,11 +145,11 @@ def whitelist():
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        if not whitelisted_users[user]:
+        if whitelisted_users[user]:
+            return jsonify({"status": "already whitelisted"}), 400
+        else:
             whitelisted_users[user] = user
             return jsonify({"status": "success"}), 200
-        else:
-            return jsonify({"status": "already whitelisted"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
     
@@ -171,7 +171,7 @@ def removewhitelist():
             del whitelisted_users[user]
             return jsonify({"status": "success"}), 200
         else:
-            return jsonify({"status": "success", "message": "User is not whitelisted."}), 200
+            return jsonify({"status": "not whitelisted"}), 400
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
 
@@ -444,6 +444,15 @@ async def whitelist(ctx, user: discord.User):
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
             await ctx.send(embed=embed)
+        elif sentrequest.status_code == 400:
+            embed = discord.Embed(
+                color = discord.Color.yellow(),
+                title = "Warning",
+                description = "User is already whitelisted."
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
     except Exception as err:
         embed = discord.Embed(
             color = discord.Color.red(),
@@ -480,7 +489,16 @@ async def removewhitelist(ctx, user: discord.User):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Whitelisted user "+user
+                description = "Unwhitelisted user "+user
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+        elif sentrequest.status_code == 400:
+            embed = discord.Embed(
+                color = discord.Color.yellow(),
+                title = "Warning",
+                description = "Specified user is not whitelisted."
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
