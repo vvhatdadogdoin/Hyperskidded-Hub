@@ -316,20 +316,6 @@ def usage_ban():
 @app.route("/bans", methods=["GET"])
 def bans():
     try:
-        requests.post(logs, json={
-            "content": None,
-            "embeds": [
-                {
-                    "title": "Hyperskidded Hub",
-                    "description": f"Bans have been fetched.",
-                    "color": 7340207,
-                    "footer": {
-                        "text": "Hyperskidded Hub",
-                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
-                    }
-                }
-            ],
-        })
         return jsonify(banned_users), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
@@ -337,20 +323,6 @@ def bans():
 @app.route("/usage-bans", methods=["GET"])
 def usagebans():
     try:
-        requests.post(logs, json={
-            "content": None,
-            "embeds": [
-                {
-                    "title": "Hyperskidded Hub",
-                    "description": f"Usage bans have been fetched.",
-                    "color": 7340207,
-                    "footer": {
-                        "text": "Hyperskidded Hub",
-                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
-                    }
-                }
-            ],
-        })
         return jsonify(usage_banned_users), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
@@ -393,11 +365,8 @@ def whitelist():
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        if whitelisted_users[user]:
-            return jsonify({"status": "already whitelisted"}), 400
-        else:
-            whitelisted_users[user] = user
-            return jsonify({"status": "success"}), 200
+        whitelisted_users[user] = user
+        return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
     
