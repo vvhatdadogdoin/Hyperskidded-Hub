@@ -275,7 +275,7 @@ async def ban(ctx, user: str):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Banned user: "+user
+                description = "Banned "+user+"."
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -316,7 +316,7 @@ async def unban(ctx, user: str):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Unbanned user: "+user
+                description = "Unbanned "+user+"."
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -357,7 +357,7 @@ async def usageban(ctx, user: str):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Banned user "+user+" from using Hyperskidded Hub."
+                description = "Banned "+user+" from using Hyperskidded Hub."
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -398,7 +398,7 @@ async def usageunban(ctx, user: str):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Unbanned user "+user+""
+                description = "Unbanned "+user+"."
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -439,7 +439,7 @@ async def whitelist(ctx, user: discord.User):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Whitelisted user "+user
+                description = "Whitelisted "+user
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
@@ -489,7 +489,7 @@ async def removewhitelist(ctx, user: discord.User):
             embed = discord.Embed(
                 color = discord.Color.green(),
                 title = "Success",
-                description = "Unwhitelisted user "+user
+                description = "Unwhitelisted "+user
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
