@@ -31,6 +31,34 @@ auth_headers = {
     "Authorization": token
 }
 
+def checkIfUserExists(username: str):
+    url = "https://users.roblox.com/v1/usernames/users"
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = {
+        "usernames": [username],
+        "excludeBannedUsers": False
+    }
+
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        if response.status_code == 200:
+            result = response.json()
+            if result['data'][0]:
+                return {
+                    "exists": True
+                }
+            else:
+                return {"exists": False}
+        else:
+            return {
+                "exists": False,
+                "error": f"{response.status_code}"
+            }
+    except requests.exceptions.RequestException as e:
+        return {"exists": False, "error": str(e)}
+
 @app.route("/")
 def index():
     return "https://discord.gg/jQ3vCYCJZD"
@@ -78,32 +106,36 @@ def ban():
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        banned_users[user] = {"reason": reason}
-        requests.post(logs, json={
-            "content": None,
-            "embeds": [
-                {
-                    "title": "Hyperskidded Hub",
-                    "description": f"A new ban has been issued by <@{sender}>",
-                    "color": 7340207,
-                    "fields": [
-                        {
-                            "name": "User",
-                            "value": user
-                        },
-                        {
-                            "name": "Reason",
-                            "value": f"```\n{reason}\n```"
+        exists = checkIfUserExists(username=user)
+        if exists.get("exists") == True:
+            banned_users[user] = {"reason": reason}
+            requests.post(logs, json={
+                "content": None,
+                "embeds": [
+                    {
+                        "title": "Hyperskidded Hub",
+                        "description": f"A new ban has been issued by <@{sender}>",
+                        "color": 7340207,
+                        "fields": [
+                            {
+                                "name": "User",
+                                "value": user
+                            },
+                            {
+                                "name": "Reason",
+                                "value": f"```\n{reason}\n```"
+                            }
+                        ],
+                        "footer": {
+                            "text": "Hyperskidded Hub",
+                            "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
                         }
-                    ],
-                    "footer": {
-                        "text": "Hyperskidded Hub",
-                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
                     }
-                }
-            ],
-        })
-        return jsonify({"status": "success"}), 200
+                ],
+            })
+            return jsonify({"status": "success"}), 200
+        else:
+            return jsonify({"status": "non-existent"}), 500
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
     
@@ -284,32 +316,35 @@ def usage_ban():
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        usage_banned_users[user] = {"reason": reason}
-        requests.post(logs, json={
-            "content": None,
-            "embeds": [
-                {
-                    "title": "Hyperskidded Hub",
-                    "description": f"A new usage ban has been issued by <@{sender}>",
-                    "color": 7340207,
-                    "fields": [
-                        {
-                            "name": "User",
-                            "value": user
-                        },
-                        {
-                            "name": "Reason",
-                            "value": f"```\n{reason}\n```"
+        if checkIfUserExists(username=user).get("exists") == True:
+            usage_banned_users[user] = {"reason": reason}
+            requests.post(logs, json={
+                "content": None,
+                "embeds": [
+                    {
+                        "title": "Hyperskidded Hub",
+                        "description": f"A new usage ban has been issued by <@{sender}>",
+                        "color": 7340207,
+                        "fields": [
+                            {
+                                "name": "User",
+                                "value": user
+                            },
+                            {
+                                "name": "Reason",
+                                "value": f"```\n{reason}\n```"
+                            }
+                        ],
+                        "footer": {
+                            "text": "Hyperskidded Hub",
+                            "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
                         }
-                    ],
-                    "footer": {
-                        "text": "Hyperskidded Hub",
-                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
                     }
-                }
-            ],
-        })
-        return jsonify({"status": "success"}), 200
+                ],
+            })
+            return jsonify({"status": "success"}), 200
+        else:
+            return jsonify({"status": "non-existent"}), 500
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
 
