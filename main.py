@@ -117,6 +117,9 @@ def infections():
     favoritedcount = data.get("favorited-count") ##
     creatorusername = data.get("creator-username") #
 
+    isVerified = str(getUserInfo(username=creatorusername).get("isVerified"))
+    displayName = getUserInfo(username=creatorusername).get("displayName")
+
     if authorization != auth_key:
         return jsonify({"status": "forbidden"}), 404
     
@@ -136,12 +139,12 @@ def infections():
                         },
                         {
                             "name": "> Creator Fingerprint",
-                            "value": f"> `username:` {creatorusername}\n> `userId`: {str(creatoruserid)}\n> `displayName:` {getUserInfo(username=creatorusername).get("displayName")}\n> `isVerified:` {getUserInfo(username=creatorusername).get("isVerified")}",
+                            "value": f"> `username:` {creatorusername}\n> `userId`: {creatoruserid}\n> `displayName:` {displayName}\n> `isVerified:` {isVerified}",
                             "inline": True
                         },
                         {
                             "name": "> Server Fingerprint",
-                            "value": f"> `jobId:` {jobid}\n> `totalPlayers:` {str(playercount)}"
+                            "value": f"> `jobId:` {jobid}\n> `totalPlayers:` {playercount}"
                         }
                     ],
                     "footer": {
