@@ -20,7 +20,8 @@ logs = os.getenv("LOGS_URL")
 owner = 1224392642448724012
 
 whitelisted_users = {
-    "1224392642448724012": 1224392642448724012
+    "1224392642448724012": 1224392642448724012,
+    "1289008907955470439": 1289008907955470439,
 }
 
 banned_users = {}
@@ -67,8 +68,8 @@ def index():
 def ban():
     data = request.get_json()
     user = data.get("user")
-    sender = str(data.get("sender"))
-    reason = str(data.get("reason"))
+    sender = data.get("sender")
+    reason = data.get("reason")
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -143,7 +144,7 @@ def ban():
 def unban():
     data = request.get_json()
     user = data.get("user")
-    sender = str(data.get("sender"))
+    sender = data.get("sender")
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -173,7 +174,7 @@ def unban():
         })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if not whitelisted_users[sender]:
+    if not whitelisted_users[str(sender)]:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
@@ -209,7 +210,7 @@ def unban():
 def usageunban():
     data = request.get_json()
     user = data.get("user")
-    sender = str(data.get("sender"))
+    sender = data.get("sender")
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -239,7 +240,7 @@ def usageunban():
         })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if not whitelisted_users[sender]:
+    if not whitelisted_users[str(sender)]:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
@@ -312,7 +313,7 @@ def usage_ban():
         })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if not whitelisted_users[sender]:
+    if not whitelisted_users[str(sender)]:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
@@ -366,7 +367,7 @@ def usagebans():
 def whitelist():
     data = request.get_json()
     user = data.get("user_id")
-    sender = str(data.get("sender"))
+    sender = data.get("sender")
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -396,11 +397,11 @@ def whitelist():
         })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if sender != str(owner):
+    if sender != owner:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        whitelisted_users[user] = user
+        whitelisted_users[str(user)] = user
         return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
@@ -409,7 +410,7 @@ def whitelist():
 def removewhitelist():
     data = request.get_json()
     user = data.get("user_id")
-    sender = str(data.get("sender"))
+    sender = data.get("sender")
     authorization = data.get("authorization")
 
     if authorization != token:
@@ -439,12 +440,12 @@ def removewhitelist():
         })
         return jsonify({"status": "forbidden", "error": "You do not have a valid authorization key."}), 404
     
-    if sender != str(owner):
+    if sender != owner:
         return jsonify({"status": "forbidden", "error": "You're not authorized."}), 404
     
     try:
-        if whitelisted_users[user]:
-            del whitelisted_users[user]
+        if whitelisted_users[str(user)]:
+            del whitelisted_users[str(user)]
             return jsonify({"status": "success"}), 200
         else:
             return jsonify({"status": "not whitelisted"}), 400
@@ -528,7 +529,7 @@ async def on_command(ctx):
 @bot.command()
 async def ban(ctx, user: str, *, reason: str):
     try:
-        sentrequest = requests.post(url+"ban", json={"user": user, "authorization": token, "sender": str(ctx.author.id), "reason": reason})
+        sentrequest = requests.post(url+"ban", json={"user": user, "authorization": token, "sender": ctx.author.id, "reason": reason})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -573,7 +574,7 @@ async def ban(ctx, user: str, *, reason: str):
 @bot.command()
 async def unban(ctx, user: str):
     try:
-        sentrequest = requests.post(url+"unban", json={"user": user, "authorization": token, "sender": str(ctx.author.id)})
+        sentrequest = requests.post(url+"unban", json={"user": user, "authorization": token, "sender": ctx.author.id})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -659,7 +660,7 @@ async def usageban(ctx, user: str, *, reason: str):
 @bot.command()
 async def usageunban(ctx, user: str):
     try:
-        sentrequest = requests.post(url+"usage-unban", json={"user": user, "authorization": token, "sender": str(ctx.author.id)})
+        sentrequest = requests.post(url+"usage-unban", json={"user": user, "authorization": token, "sender": ctx.author.id})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -700,7 +701,7 @@ async def usageunban(ctx, user: str):
 @bot.command()
 async def whitelist(ctx, user: discord.User):
     try:
-        sentrequest = requests.post(url+"whitelist", json={"user": user.id, "authorization": token, "sender": str(ctx.author.id)})
+        sentrequest = requests.post(url+"whitelist", json={"user": user.id, "authorization": token, "sender": ctx.author.id})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
@@ -750,7 +751,7 @@ async def whitelist(ctx, user: discord.User):
 @bot.command()
 async def removewhitelist(ctx, user: discord.User):
     try:
-        sentrequest = requests.post(url+"remove-whitelist", json={"user": user.id, "authorization": token, "sender": str(ctx.author.id)})
+        sentrequest = requests.post(url+"remove-whitelist", json={"user": user.id, "authorization": token, "sender": ctx.author.id})
         if sentrequest.status_code == 404:
             embed = discord.Embed(
                 color = discord.Color.yellow(),
