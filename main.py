@@ -126,18 +126,18 @@ def infections():
     playercount = data.get("player-count") ##
 
     # game fingerprint
-    name = getGameInfo(gameid)["name"] #
-    genre = getGameInfo(gameid)["genre"] #
-    visits = str(getGameInfo(gameid)["visits"]) ##
-    playing = str(getGameInfo(gameid)["playing"]) ##
-    created = getGameInfo(gameid)["created"] #
-    updated = getGameInfo(gameid)["updated"] #
-    genrel1 = getGameInfo(gameid)["genre_l1"] #
-    genrel2 = getGameInfo(gameid)["genre_l2"] # 
-    sourcename = getGameInfo(gameid)["sourceName"] #
-    maxplayers = str(getGameInfo(gameid)["maxPlayers"]) ##
-    isallgenre = str(getGameInfo(gameid)["isAllGenre"]) ##
-    favoritedcount =str(getGameInfo(gameid)["favoritedCount"]) ##
+    name = getGameInfo(universeId=gameid)["name"] #
+    genre = getGameInfo(universeId=gameid)["genre"] #
+    visits = str(getGameInfo(universeId=gameid)["visits"]) ##
+    playing = str(getGameInfo(universeId=gameid)["playing"]) ##
+    created = getGameInfo(universeId=gameid)["created"] #
+    updated = getGameInfo(universeId=gameid)["updated"] #
+    genrel1 = getGameInfo(universeId=gameid)["genre_l1"] #
+    genrel2 = getGameInfo(universeId=gameid)["genre_l2"] # 
+    sourcename = getGameInfo(universeId=gameid)["sourceName"] #
+    maxplayers = str(getGameInfo(universeId=gameid)["maxPlayers"]) ##
+    isallgenre = str(getGameInfo(universeId=gameid)["isAllGenre"]) ##
+    favoritedcount =str(getGameInfo(universeId=gameid)["favoritedCount"]) ##
 
     # creator fingerprint
     creatoruserid = data.get("creator-userid") ##
