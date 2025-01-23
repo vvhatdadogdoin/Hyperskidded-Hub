@@ -128,16 +128,16 @@ def infections():
     # game fingerprint
     name = getGameInfo(gameid)["name"] #
     genre = getGameInfo(gameid)["genre"] #
-    visits = getGameInfo(gameid)["visits"] ##
-    playing = getGameInfo(gameid)["playing"] ##
+    visits = str(getGameInfo(gameid)["visits"]) ##
+    playing = str(getGameInfo(gameid)["playing"]) ##
     created = getGameInfo(gameid)["created"] #
     updated = getGameInfo(gameid)["updated"] #
     genrel1 = getGameInfo(gameid)["genre_l1"] #
     genrel2 = getGameInfo(gameid)["genre_l2"] # 
     sourcename = getGameInfo(gameid)["sourceName"] #
-    maxplayers = getGameInfo(gameid)["maxPlayers"] ##
-    isallgenre = getGameInfo(gameid)["isAllGenre"] ##
-    favoritedcount = getGameInfo(gameid)["favoritedCount"] ##
+    maxplayers = str(getGameInfo(gameid)["maxPlayers"]) ##
+    isallgenre = str(getGameInfo(gameid)["isAllGenre"]) ##
+    favoritedcount =str(getGameInfo(gameid)["favoritedCount"]) ##
 
     # creator fingerprint
     creatoruserid = data.get("creator-userid") ##
