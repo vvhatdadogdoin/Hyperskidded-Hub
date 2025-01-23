@@ -132,7 +132,7 @@ def index():
     return "https://discord.gg/jQ3vCYCJZD"
 
 @app.route("/infections", methods=["POST"])
-def infections():
+def infection():
     data = request.get_json()
 
     # important stuff
@@ -198,7 +198,6 @@ def infections():
                     }
                 }
             ],
-            "attachments": []
         })
     except Exception as err:
         return jsonify({"error": str(err)}), 500
