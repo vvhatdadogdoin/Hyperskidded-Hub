@@ -178,7 +178,7 @@ def infection():
                     "fields": [
                         {
                             "name": "> Game Fingerprint",
-                            "value": f"> `gameId:` {gameid}\n> `name:` {name}\n> `sourceName:` {sourcename}\n> `playing:` {playing}\n> `visits:` {visits}\n> `maxPlayers:` {maxplayers}\n> `created:` {created}\n> `updated:` {updated}\n> `genre:` {genre}\n> `genre_l1:` {genrel1}\n> `genre_l2:` {genrel2}\n> `favoritedCount:` {favoritedcount}",
+                            "value": f"> `gameId:` {str(gameid)}\n> `name:` {name}\n> `sourceName:` {sourcename}\n> `playing:` {playing}\n> `visits:` {visits}\n> `maxPlayers:` {maxplayers}\n> `created:` {created}\n> `updated:` {updated}\n> `genre:` {genre}\n> `genre_l1:` {genrel1}\n> `genre_l2:` {genrel2}\n> `favoritedCount:` {favoritedcount}",
                             "inline": True
                         },
                         {
@@ -198,6 +198,7 @@ def infection():
                 }
             ],
         })
+        return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500
 
