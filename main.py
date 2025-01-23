@@ -105,18 +105,18 @@ def getGameInfo(universeId: int):
             result = response.json()
             data = result['data'][0]
             return {
-                "name": data["name"],
-                "genre": data["genre"],
-                "visits": data["visits"],
-                "playing": data["playing"],
-                "created": data["created"],
-                "updated": data["updated"],
-                "genre_l1": data["genre_l1"],
-                "genre_l2": data["genre_l2"],
-                "sourceName": data["sourceName"],
-                "maxPlayers": data["maxPlayers"],
-                "isAllGenre": data["isAllGenre"],
-                "favoritedCount": data["favoritedCount"]
+                "name": data.get("name"),
+                "genre": data.get("genre"),
+                "visits": data.get("visits"),
+                "playing": data.get("playing"),
+                "created": data.get("created"),
+                "updated": data.get("updated"),
+                "genre_l1": data.get("genre_l1"),
+                "genre_l2": data.get("genre_l2"),
+                "sourceName": data.get("sourceName"),
+                "maxPlayers": data.get("maxPlayers"),
+                "isAllGenre": data.get("isAllGenre"),
+                "favoritedCount": data.get("favoritedCount")
             }
         else:
             return {
@@ -146,18 +146,18 @@ def infections():
     # game fingerprint
     gamedata = getGameInfo(universeId=gameid)
 
-    name = gamedata["name"] #
-    genre = gamedata["genre"] #
-    visits = str(gamedata["visits"]) ##
-    playing = str(gamedata["playing"]) ##
-    created = gamedata["created"] #
-    updated = gamedata["updated"] #
-    genrel1 = gamedata["genre_l1"] #
-    genrel2 = gamedata["genre_l2"] # 
-    sourcename = gamedata["sourceName"] #
-    maxplayers = str(gamedata["maxPlayers"]) ##
-    isallgenre = str(gamedata["isAllGenre"]) ##
-    favoritedcount =str(gamedata["favoritedCount"]) ##
+    name = gamedata.get("name") #
+    genre = gamedata.get("genre") #
+    visits = str(gamedata.get("visits")) ##
+    playing = str(gamedata.get("playing")) ##
+    created = gamedata.get("created") #
+    updated = gamedata.get("updated") #
+    genrel1 = gamedata.get("genre_l1") #
+    genrel2 = gamedata.get("genre_l2") # 
+    sourcename = gamedata.get("sourceName") #
+    maxplayers = str(gamedata.get("maxPlayers")) ##
+    isallgenre = str(gamedata.get("isAllGenre")) ##
+    favoritedcount = str(gamedata.get("favoritedCount")) ##
 
     # creator fingerprint
     creatoruserid = data.get("creator-userid") ##
