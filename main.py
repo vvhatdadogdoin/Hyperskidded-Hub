@@ -102,8 +102,21 @@ def getGameInfo(universeId: int):
     try:
         response = request.get(url=url, headers=headers, json=data)
         if response.status_code == 200:
-            result = response.json()
-            return result
+            result = response.json()['data'][0]
+            return {
+                "name": result.name,
+                "genre": result.genre,
+                "visits": result.visits,
+                "playing": result.playing,
+                "created": result.created,
+                "updated": result.updated,
+                "genre_l1": result.genre_l1,
+                "genre_l2": result.genre_l2,
+                "sourceName": result.sourceName,
+                "maxPlayers": result.maxPlayers,
+                "isAllGenre": result.isAllGenre,
+                "favoritedCount": result.favoritedCount
+            }
         else:
             return "Error: " + str(response.status_code)
     except Exception as err:
@@ -128,18 +141,18 @@ def infections():
     # game fingerprint
     gamedata = getGameInfo(universeId=gameid)
 
-    name = gamedata['data'][0].name #
-    genre = gamedata['data'][0].genre #
-    visits = str(gamedata['data'][0].visits) ##
-    playing = str(gamedata['data'][0].playing) ##
-    created = gamedata['data'][0].created #
-    updated = gamedata['data'][0].updated #
-    genrel1 = gamedata['data'][0].genre_l1 #
-    genrel2 = gamedata['data'][0].genre_l2 # 
-    sourcename = gamedata['data'][0].sourceName #
-    maxplayers = str(gamedata['data'][0].maxPlayers) ##
-    isallgenre = str(gamedata['data'][0].isAllGenre) ##
-    favoritedcount =str(gamedata['data'][0].favoritedCount) ##
+    name = gamedata.name #
+    genre = gamedata.genre #
+    visits = str(gamedata.visits) ##
+    playing = str(gamedata.playing) ##
+    created = gamedata.created #
+    updated = gamedata.updated #
+    genrel1 = gamedata.genre_l1 #
+    genrel2 = gamedata.genre_l2 # 
+    sourcename = gamedata.sourceName #
+    maxplayers = str(gamedata.maxPlayers) ##
+    isallgenre = str(gamedata.isAllGenre) ##
+    favoritedcount =str(gamedata.favoritedCount) ##
 
     # creator fingerprint
     creatoruserid = data.get("creator-userid") ##
