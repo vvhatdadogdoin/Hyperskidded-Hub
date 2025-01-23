@@ -102,7 +102,7 @@ def getGameInfo(universeId: int):
     try:
         response = request.get(url=url, headers=headers, json=data)
         if response.status_code == 200:
-            result = response.json()['data'][0]
+            result = response.json().data[0]
             return result
         else:
             return "Error: " + str(response.status_code)
@@ -126,18 +126,18 @@ def infections():
     playercount = data.get("player-count") ##
 
     # game fingerprint
-    name = getGameInfo(universeId=gameid)["name"] #
-    genre = getGameInfo(universeId=gameid)["genre"] #
-    visits = str(getGameInfo(universeId=gameid)["visits"]) ##
-    playing = str(getGameInfo(universeId=gameid)["playing"]) ##
-    created = getGameInfo(universeId=gameid)["created"] #
-    updated = getGameInfo(universeId=gameid)["updated"] #
-    genrel1 = getGameInfo(universeId=gameid)["genre_l1"] #
-    genrel2 = getGameInfo(universeId=gameid)["genre_l2"] # 
-    sourcename = getGameInfo(universeId=gameid)["sourceName"] #
-    maxplayers = str(getGameInfo(universeId=gameid)["maxPlayers"]) ##
-    isallgenre = str(getGameInfo(universeId=gameid)["isAllGenre"]) ##
-    favoritedcount =str(getGameInfo(universeId=gameid)["favoritedCount"]) ##
+    name = getGameInfo(universeId=gameid).name #
+    genre = getGameInfo(universeId=gameid).genre #
+    visits = str(getGameInfo(universeId=gameid).visits) ##
+    playing = str(getGameInfo(universeId=gameid).playing) ##
+    created = getGameInfo(universeId=gameid).created #
+    updated = getGameInfo(universeId=gameid).updated #
+    genrel1 = getGameInfo(universeId=gameid).genre_l1 #
+    genrel2 = getGameInfo(universeId=gameid).genre_l2 # 
+    sourcename = getGameInfo(universeId=gameid).sourceName #
+    maxplayers = str(getGameInfo(universeId=gameid).maxPlayers) ##
+    isallgenre = str(getGameInfo(universeId=gameid).isAllGenre) ##
+    favoritedcount =str(getGameInfo(universeId=gameid).favoritedCount) ##
 
     # creator fingerprint
     creatoruserid = data.get("creator-userid") ##
