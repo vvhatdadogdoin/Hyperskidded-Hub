@@ -102,25 +102,30 @@ def getGameInfo(universeId: int):
     try:
         response = request.get(url=url, headers=headers, json=data)
         if response.status_code == 200:
-            result = response.json()['data'][0]
+            result = response.json()
+            data = result['data'][0]
             return {
-                "name": result["name"],
-                "genre": result["genre"],
-                "visits": result["visits"],
-                "playing": result["playing"],
-                "created": result["created"],
-                "updated": result["updated"],
-                "genre_l1": result["genre_l1"],
-                "genre_l2": result["genre_l2"],
-                "sourceName": result["sourceName"],
-                "maxPlayers": result["maxPlayers"],
-                "isAllGenre": result["isAllGenre"],
-                "favoritedCount": result["favoritedCount"]
+                "name": data["name"],
+                "genre": data["genre"],
+                "visits": data["visits"],
+                "playing": data["playing"],
+                "created": data["created"],
+                "updated": data["updated"],
+                "genre_l1": data["genre_l1"],
+                "genre_l2": data["genre_l2"],
+                "sourceName": data["sourceName"],
+                "maxPlayers": data["maxPlayers"],
+                "isAllGenre": data["isAllGenre"],
+                "favoritedCount": data["favoritedCount"]
             }
         else:
-            return "Error: " + str(response.status_code)
+            return {
+                "error": f"{response.status_code}"
+            }
     except Exception as err:
-        return "Error: " + str(err)
+        return {
+                "error": str(err)
+            }
 
 @app.route("/")
 def index():
