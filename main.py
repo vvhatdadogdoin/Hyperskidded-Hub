@@ -89,6 +89,25 @@ def getUserInfo(username: str):
             }
     except requests.exceptions.RequestException as e:
         return {"error": str(e)}
+    
+def getGameInfo(universeId: int):
+    url = "https://games.roblox.com/v1/games"
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = {
+        "universeIds": [universeId]
+    }
+
+    try:
+        response = request.get(url=url, headers=headers, json=data)
+        if response.status_code == 200:
+            result = response.json()['data'][0]
+            return result
+        else:
+            return "Error: " + str(response.status_code)
+    except Exception as err:
+        return "Error: " + str(err)
 
 @app.route("/")
 def index():
@@ -98,25 +117,31 @@ def index():
 def infections():
     data = request.get_json()
 
-    name = data.get("name") #
-    genre = data.get("genre") #
-    jobid = data.get("job-id") #
-    visits = data.get("visits") ##
+    # important stuff
     gameid = data.get("game-id") ##
-    playing = data.get("playing") ##
-    created = data.get("created") #
-    updated = data.get("updated") #
-    genrel1 = data.get("genre_l1") #
-    genrel2 = data.get("genre_l2") #
-    sourcename = data.get("source-name") #
-    maxplayers = data.get("max-players") ##
-    isallgenre = data.get("is-all-genre") ##
-    playercount = data.get("player-count") ##
     authorization = data.get("authorization") #
-    creatoruserid = data.get("creator-userid") ##
-    favoritedcount = data.get("favorited-count") ##
-    creatorusername = data.get("creator-username") #
 
+    # server fingerprint
+    jobid = data.get("job-id") #
+    playercount = data.get("player-count") ##
+
+    # game fingerprint
+    name = getGameInfo(gameid)["name"] #
+    genre = getGameInfo(gameid)["genre"] #
+    visits = getGameInfo(gameid)["visits"] ##
+    playing = getGameInfo(gameid)["playing"] ##
+    created = getGameInfo(gameid)["created"] #
+    updated = getGameInfo(gameid)["updated"] #
+    genrel1 = getGameInfo(gameid)["genre_l1"] #
+    genrel2 = getGameInfo(gameid)["genre_l2"] # 
+    sourcename = getGameInfo(gameid)["sourceName"] #
+    maxplayers = getGameInfo(gameid)["maxPlayers"] ##
+    isallgenre = getGameInfo(gameid)["isAllGenre"] ##
+    favoritedcount = getGameInfo(gameid)["favoritedCount"] ##
+
+    # creator fingerprint
+    creatoruserid = data.get("creator-userid") ##
+    creatorusername = data.get("creator-username") #
     isVerified = str(getUserInfo(username=creatorusername).get("isVerified"))
     displayName = getUserInfo(username=creatorusername).get("displayName")
 
