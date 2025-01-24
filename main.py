@@ -26,6 +26,8 @@ whitelisted_users = {
     "1289008907955470439": 1289008907955470439,
 }
 
+infection_whitelist = {}
+
 banned_users = {}
 
 usage_banned_users = {}
@@ -501,6 +503,13 @@ def usagebans():
         return jsonify(usage_banned_users), 200
     except Exception as err:
         return jsonify({"status": "error", "message": str(err)}), 500
+    
+@app.route("/infection-whitelists", methods=["GET"])
+def infectionwhitelists():
+    try:
+        return jsonify(infection_whitelist), 200
+    except Exception as err:
+        return jsonify({"status": "error", "message": str(err)}), 500
 
 @app.route("/whitelist", methods=["POST"])
 def whitelist():
@@ -737,6 +746,38 @@ async def unban(ctx, user: str):
                 color = discord.Color.green(),
                 title = "Success",
                 description = "Unbanned user: "+user
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+    except Exception as err:
+        embed = discord.Embed(
+            color = discord.Color.red(),
+            title = "Error",
+            description = str(err)
+        )
+        embed.timestamp = discord.utils.utcnow()
+        embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+        await ctx.send(embed=embed)
+
+@bot.command()
+async def infectionwl(ctx, user: str):
+    try:
+        if infection_whitelist[user]:
+            embed = discord.Embed(
+                color = discord.Color.yellow(),
+                title = "Warning",
+                description = user+" is already added to the infection whitelist."
+            )
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+            await ctx.send(embed=embed)
+        else:
+            infection_whitelist[user] = user
+            embed = discord.Embed(
+                color = discord.Color.green(),
+                title = "Success",
+                description = "Added "+user+" to the infector whitelist."
             )
             embed.timestamp = discord.utils.utcnow()
             embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
