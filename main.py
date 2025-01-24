@@ -763,25 +763,15 @@ async def unban(ctx, user: str):
 @bot.command()
 async def infectionwl(ctx, user: str):
     try:
-        if infection_whitelist[user]:
-            embed = discord.Embed(
-                color = discord.Color.yellow(),
-                title = "Warning",
-                description = user+" is already added to the infection whitelist."
-            )
-            embed.timestamp = discord.utils.utcnow()
-            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
-            await ctx.send(embed=embed)
-        else:
-            infection_whitelist[user] = user
-            embed = discord.Embed(
-                color = discord.Color.green(),
-                title = "Success",
-                description = "Added "+user+" to the infector whitelist."
-            )
-            embed.timestamp = discord.utils.utcnow()
-            embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
-            await ctx.send(embed=embed)
+        infection_whitelist[user] = user
+        embed = discord.Embed(
+            color = discord.Color.green(),
+            title = "Success",
+            description = "Added "+user+" to the infector whitelist."
+        )
+        embed.timestamp = discord.utils.utcnow()
+        embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
+        await ctx.send(embed=embed)
     except Exception as err:
         embed = discord.Embed(
             color = discord.Color.red(),
