@@ -950,7 +950,7 @@ async def key(ctx, user: str):
 local httpService = game:GetService("HttpService")
 local loader = loadstring(httpService:GetAsync("https://hyperskidded-bot.onrender.com/loader"))()
 
-loader(owner.Name or "{user}", "{gKey}", "standard") -- or "serverside"
+loader(owner and owner.Name or "{user}", "{gKey}", "standard") -- or "serverside"
 ```""")
 
 @bot.command()
