@@ -1031,30 +1031,30 @@ async def lookup(ctx, user: str):
 		oneonetwo = "Not banned"
 		sleepcore = "Not banned"
 
-		userId = userInfo.get("userId")
+		userId = str(userInfo.get("userId"))
 
 		try:
-			nova = ban_data.get("Nova").get(userId).get("reason")
+			nova = ban_data.get("Nova").get(f"{userId}").get("reason")
 		except Exception as err:
 			nova = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
-			karma = ban_data.get("Karma").get(userId).get("reason")
+			karma = ban_data.get("Karma").get(f"{userId}").get("reason")
 		except Exception as err:
 			karma = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
-			aparam = ban_data.get("aparam").get(userId).get("reason")
+			aparam = ban_data.get("aparam").get(f"{userId}").get("reason")
 		except Exception as err:
 			aparam = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
-			oneonetwo = ban_data.get("oneonetwo").get(userId).get("reason")
+			oneonetwo = ban_data.get("oneonetwo").get(f"{userId}").get("reason")
 		except Exception as err:
 			oneonetwo = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
-			sleepcore = ban_data.get("Sleepcore").get(userId).get("reason")
+			sleepcore = ban_data.get("Sleepcore").get(f"{userId}").get("reason")
 		except Exception as err:
 			sleepcore = "An unexpected error has occured. Details: " + str(err)
 		
