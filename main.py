@@ -1036,33 +1036,32 @@ async def lookup(ctx, user: str):
 		try:
 			nova = ban_data.get("Nova").get(f"{userId}").get("reason")
 		except Exception as err:
-			nova = "An unexpected error has occured. Details: " + str(err)
+			nova = "User is not banned."
 		
 		try:
 			karma = ban_data.get("Karma").get(f"{userId}").get("reason")
 		except Exception as err:
-			karma = "An unexpected error has occured. Details: " + str(err)
+			karma = "User is not banned."
 		
 		try:
 			aparam = ban_data.get("aparam").get(f"{userId}").get("reason")
 		except Exception as err:
-			aparam = "An unexpected error has occured. Details: " + str(err)
+			aparam = "User is not banned."
 		
 		try:
 			oneonetwo = ban_data.get("oneonetwo").get(f"{userId}").get("reason")
 		except Exception as err:
-			oneonetwo = "An unexpected error has occured. Details: " + str(err)
+			oneonetwo = "User is not banned."
 		
 		try:
 			sleepcore = ban_data.get("Sleepcore").get(f"{userId}").get("reason")
 		except Exception as err:
-			sleepcore = "An unexpected error has occured. Details: " + str(err)
+			sleepcore = "User is not banned."
 		
 		embed = discord.Embed(
 			color = discord.Color.green(),
 			title = "User Lookup - " + user
 		)
-
 
 		embed.add_field(name="Profile Link", value=f"[{user}](https://www.roblox.com/users/{userId}/profile)", inline=False)
 		embed.add_field(name="Nova - Ban Data", value=nova, inline=False)
