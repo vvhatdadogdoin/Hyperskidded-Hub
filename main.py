@@ -1032,27 +1032,27 @@ async def lookup(ctx, user: str):
 		sleepcore = "Not banned"
 
 		try:
-			nova = ban_data.get("Nova")[userInfo.userId]
+			nova = ban_data.get("Nova").get(userInfo.userId).get("reason")
 		except:
 			nova = "Not banned"
 		
 		try:
-			karma = ban_data.get("Karma")[userInfo.userId]
+			karma = ban_data.get("Karma").get(userInfo.userId).get("reason")
 		except:
 			karma = "Not banned"
 		
 		try:
-			aparam = ban_data.get("aparam")[userInfo.userId]
+			aparam = ban_data.get("aparam").get(userInfo.userId).get("reason")
 		except:
 			aparam = "Not banned"
 		
 		try:
-			oneonetwo = ban_data.get("oneonetwo")[userInfo.userId]
+			oneonetwo = ban_data.get("oneonetwo").get(userInfo.userId).get("reason")
 		except:
 			oneonetwo = "Not banned"
 		
 		try:
-			sleepcore = ban_data.get("Sleepcore")[userInfo.userId]
+			sleepcore = ban_data.get("Sleepcore").get(userInfo.userId).get("reason")
 		except:
 			sleepcore = "Not banned"
 		
