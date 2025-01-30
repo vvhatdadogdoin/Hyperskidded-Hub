@@ -1061,7 +1061,7 @@ async def lookup(ctx, user: str):
 			title = "User Lookup - " + user
 		)
 
-		embed.add_field(name="Profile Link", value=f"[{user}](https://www.roblox.com/users/{userInfo.userId}/profile)", inline=False)
+		embed.add_field(name="Profile Link", value=f"[{user}](https://www.roblox.com/users/{userInfo.get("userId")}/profile)", inline=False)
 		embed.add_field(name="Nova - Ban Data", value=nova, inline=False)
 		embed.add_field(name="aparam - Ban Data", value=aparam, inline=False)
 		embed.add_field(name="Karma - Ban Data", value=karma, inline=False)
