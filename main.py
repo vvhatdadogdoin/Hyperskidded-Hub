@@ -1031,28 +1031,30 @@ async def lookup(ctx, user: str):
 		oneonetwo = "Not banned"
 		sleepcore = "Not banned"
 
+		userId = userInfo.get("userId")
+
 		try:
-			nova = ban_data.get("Nova").get(userInfo.userId).get("reason")
+			nova = ban_data.get("Nova").get(userId).get("reason")
 		except Exception as err:
 			nova = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
-			karma = ban_data.get("Karma").get(userInfo.userId).get("reason")
+			karma = ban_data.get("Karma").get(userId).get("reason")
 		except Exception as err:
 			karma = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
-			aparam = ban_data.get("aparam").get(userInfo.userId).get("reason")
+			aparam = ban_data.get("aparam").get(userId).get("reason")
 		except Exception as err:
 			aparam = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
-			oneonetwo = ban_data.get("oneonetwo").get(userInfo.userId).get("reason")
+			oneonetwo = ban_data.get("oneonetwo").get(userId).get("reason")
 		except Exception as err:
 			oneonetwo = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
-			sleepcore = ban_data.get("Sleepcore").get(userInfo.userId).get("reason")
+			sleepcore = ban_data.get("Sleepcore").get(userId).get("reason")
 		except Exception as err:
 			sleepcore = "An unexpected error has occured. Details: " + str(err)
 		
@@ -1061,7 +1063,6 @@ async def lookup(ctx, user: str):
 			title = "User Lookup - " + user
 		)
 
-		userId = userInfo.get("userId")
 
 		embed.add_field(name="Profile Link", value=f"[{user}](https://www.roblox.com/users/{userId}/profile)", inline=False)
 		embed.add_field(name="Nova - Ban Data", value=nova, inline=False)
