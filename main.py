@@ -1033,28 +1033,28 @@ async def lookup(ctx, user: str):
 
 		try:
 			nova = ban_data.get("Nova").get(userInfo.userId).get("reason")
-		except:
-			nova = "Not banned"
+		except Exception as err:
+			nova = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
 			karma = ban_data.get("Karma").get(userInfo.userId).get("reason")
-		except:
-			karma = "Not banned"
+		except Exception as err:
+			karma = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
 			aparam = ban_data.get("aparam").get(userInfo.userId).get("reason")
-		except:
-			aparam = "Not banned"
+		except Exception as err:
+			aparam = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
 			oneonetwo = ban_data.get("oneonetwo").get(userInfo.userId).get("reason")
-		except:
-			oneonetwo = "Not banned"
+		except Exception as err:
+			oneonetwo = "An unexpected error has occured. Details: " + str(err)
 		
 		try:
 			sleepcore = ban_data.get("Sleepcore").get(userInfo.userId).get("reason")
-		except:
-			sleepcore = "Not banned"
+		except Exception as err:
+			sleepcore = "An unexpected error has occured. Details: " + str(err)
 		
 		embed = discord.Embed(
 			color = discord.Color.green(),
